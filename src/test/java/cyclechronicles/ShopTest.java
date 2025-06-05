@@ -193,9 +193,6 @@ public class ShopTest {
 
 
     private Order CreateOrderMock(String customer, Type bikeType) {
-        var order = Mockito.mock(Order.class);
-        Mockito.when(order.getCustomer()).thenReturn(customer);
-        Mockito.when(order.getBicycleType()).thenReturn(bikeType);
-        return order;
+        return new Order(bikeType, customer);
     }
 }
