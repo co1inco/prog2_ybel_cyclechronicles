@@ -3,6 +3,8 @@ package cyclechronicles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import java.util.logging.LogManager;
+import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +15,8 @@ public class ShopTest {
 
     @BeforeEach
     public void Initialize() {
-
+        var shop = new Shop(); // make sure the shop logger is instantiated
+        LogManager.getLogManager().getLogger(Shop.class.getName()).setLevel(Level.SEVERE);
     }
 
 
