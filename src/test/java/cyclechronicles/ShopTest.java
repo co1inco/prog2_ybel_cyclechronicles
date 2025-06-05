@@ -99,6 +99,99 @@ public class ShopTest {
     }
 
 
+    /**
+     * Repair should repair the first accepted bike
+     */
+    @Test
+    public void RepairBike() {
+        //Arrange
+        var shop = new Shop();
+        var order = CreateOrderMock(_dummyCustomer, Type.RACE);
+
+        shop.accept(order);
+
+        //Act
+        var result = shop.repair();
+
+        //Arrange
+        assertTrue(result.isPresent());
+        assertEquals(order, result.get());
+
+        // No more bikes should be pending
+        assertTrue(shop.repair().isEmpty());
+    }
+
+    /**
+     * If no order is pending, nothing should be repaired
+     */
+    @Test
+    public void RepairBike_NoPending() {
+        //Arrange
+        var shop = new Shop();
+
+        //Act
+        var result = shop.repair();
+
+        //Arrange
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * Deliver a repaired bike
+     */
+    @Test
+    public void DeliverRepairedBike() {
+        //Arrange
+        var shop = new Shop();
+        var order = CreateOrderMock(_dummyCustomer, Type.RACE);
+
+        shop.accept(order);
+        shop.repair();
+
+        //Act
+        var result = shop.deliver(_dummyCustomer);
+
+        //Arrange
+        assertTrue(result.isPresent());
+        assertEquals(order, result.get());
+    }
+
+    /**
+     * should not deliver a bike if none are repaired
+     */
+    @Test
+    public void DeliverBike_NoOrder() {
+        //Arrange
+        var shop = new Shop();
+        var order = CreateOrderMock(_dummyCustomer, Type.RACE);
+        shop.accept(order);
+
+        //Act
+        var result = shop.deliver(_dummyCustomer);
+
+        //Arrange
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * should not deliver bike if there is no bike repaired for that customer
+     */
+    @Test
+    public void DeliverBike_DifferentCustomer() {
+        //Arrange
+        var shop = new Shop();
+        var order = CreateOrderMock(_dummyCustomer, Type.RACE);
+        shop.accept(order);
+        shop.repair();
+
+        //Act
+        var result = shop.deliver("someOtherCustomer");
+
+        //Arrange
+        assertTrue(result.isEmpty());
+    }
+
+
     private Order CreateOrderMock(String customer, Type bikeType) {
         var order = Mockito.mock(Order.class);
         Mockito.when(order.getCustomer()).thenReturn(customer);
